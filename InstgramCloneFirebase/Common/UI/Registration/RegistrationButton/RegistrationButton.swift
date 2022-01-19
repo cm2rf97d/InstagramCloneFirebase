@@ -8,16 +8,18 @@
 import Foundation
 import UIKit
 
-class RegistrationButton: UIButton {
-    init() {
-        super.init(frame: .zero)
-        self.setTitle("Sign up", for: .normal)
-        self.backgroundColor = .registrationButtonColor
-        self.layer.cornerRadius = 5
-        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+extension UIButton {
+    static func makeRegistrationButton() -> UIButton {
+        let registrationButton: UIButton = {
+            let button = UIButton(type: .system)
+            button.setTitle("Sign up", for: .normal)
+            button.setTitleColor(.white, for: .normal)
+            button.backgroundColor = .unavailabelRegisterColor
+            button.isEnabled = false
+            button.layer.cornerRadius = 5
+            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+            return button
+        }()
+        return registrationButton
     }
 }

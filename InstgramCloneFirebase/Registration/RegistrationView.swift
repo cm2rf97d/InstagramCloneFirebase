@@ -10,6 +10,9 @@ import SnapKit
 
 class RegistrationView: UIView {
     // MARK: - Properties
+    var signButtonAction: (() -> Void)?
+    var textFieldAction: (() -> Void)?
+    
     // MARK: - IBOutLets
     let changePhotoButton: UIButton = {
         let button = UIButton(type: .system)
@@ -17,15 +20,15 @@ class RegistrationView: UIView {
         return button
     }()
     
-    let emailTextField = RegistrationTextField(with: RegistrationTextFieldViewModel(placeHolder: "Email", isSecure: false))
-    let userNameTextField = RegistrationTextField(with: RegistrationTextFieldViewModel(placeHolder: "UserName", isSecure: false))
-    let passwordTextField = RegistrationTextField(with: RegistrationTextFieldViewModel(placeHolder: "PassWord", isSecure: true))
-    let signButton = RegistrationButton()
+    let emailTextField: UITextField = .makeRegistrationTextField(with: RegistrationTextFieldViewModel(placeHolder: "Email", isSecure: false))
+    let userNameTextField: UITextField = .makeRegistrationTextField(with: RegistrationTextFieldViewModel(placeHolder: "UserName", isSecure: false))
+    let passWordTextField: UITextField = .makeRegistrationTextField(with: RegistrationTextFieldViewModel(placeHolder: "PassWord", isSecure: true))
+    let signButton: UIButton = .makeRegistrationButton()
     
     lazy var registrationStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [emailTextField,
                                                        userNameTextField,
-                                                       passwordTextField,
+                                                       passWordTextField,
                                                        signButton])
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
@@ -39,19 +42,41 @@ class RegistrationView: UIView {
         self.backgroundColor = .white
         setViews()
         setLayouts()
+        setButtonAction()
+        setTextFieldAction()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     // MARK: - Function
+    @objc private func handleSignUp() {
+        signButtonAction?()
+    }
+    
+    @objc private func handleTextField() {
+        textFieldAction?()
+    }
+    
+    // MARK: - setAction
+    private func setButtonAction() {
+        signButton.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
+    }
+    
+    private func setTextFieldAction() {
+        emailTextField.addTarget(self, action: #selector(handleTextField), for: .editingChanged)
+        userNameTextField.addTarget(self, action: #selector(handleTextField), for: .editingChanged)
+        passWordTextField.addTarget(self, action: #selector(handleTextField), for: .editingChanged)
+    }
+    
     // MARK: - setViews
-    func setViews() {
+    private func setViews() {
         self.addSubview(changePhotoButton)
         self.addSubview(registrationStackView)
     }
+    
     // MARK: - setLayouts
-    func setLayouts() {
+    private func setLayouts() {
         changePhotoButton.snp.makeConstraints { make in
             make.height.width.equalTo(UIView.height * 0.17) // 140
             make.top.equalTo(self.safeAreaLayoutGuide).offset(UIView.height * 0.035) // 30

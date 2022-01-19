@@ -8,21 +8,21 @@
 import Foundation
 import UIKit
 
-class RegistrationTextField: UITextField {
-    init(with viewModel: RegistrationTextFieldViewModel) {
-        super.init(frame: .zero)
-        self.backgroundColor = .registrationTextFieldColor
-        self.borderStyle = .roundedRect
-        self.isSecureTextEntry = viewModel.isSecure
-        self.textColor = .black
-        self.attributedPlaceholder = NSAttributedString(string:viewModel.placeHolder,
-                                                        attributes:[NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        self.layer.cornerRadius = 5
-        self.layer.borderWidth = 1
-        self.layer.borderColor = UIColor.registrationTextFieldColor.cgColor
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+extension UITextField {
+    static func makeRegistrationTextField(with viewModel: RegistrationTextFieldViewModel) -> UITextField {
+        let textField: UITextField = {
+            let textField = UITextField()
+            textField.backgroundColor = .registrationTextFieldColor
+            textField.borderStyle = .roundedRect
+            textField.isSecureTextEntry = viewModel.isSecure
+            textField.textColor = .black
+            textField.attributedPlaceholder = NSAttributedString(string:viewModel.placeHolder,
+                                                            attributes:[NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+            textField.layer.cornerRadius = 5
+            textField.layer.borderWidth = 1
+            textField.layer.borderColor = UIColor.registrationTextFieldColor.cgColor
+            return textField
+        }()
+        return textField
     }
 }
