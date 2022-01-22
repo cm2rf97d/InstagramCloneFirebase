@@ -28,6 +28,7 @@ class RegistrationViewController: UIViewController {
     // MARK: - Function
     private func setButtonAction() {
         registrationView.signButtonAction = handleSignup
+        registrationView.updatePhotoButtonAction = updatePhoto
     }
     
     private func setTextFieldAction() {
@@ -56,13 +57,33 @@ class RegistrationViewController: UIViewController {
         guard let email: String = registrationView.emailTextField.text, !email.isEmpty else { return }
         guard let userName: String = registrationView.userNameTextField.text, !userName.isEmpty else { return }
         guard let password: String = registrationView.passWordTextField.text, !password.isEmpty else { return }
+        guard let image: UIImage = registrationView.updatePhotoButton.imageView?.image else { return }
         
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            self.viewModel.checkSignupResult(result: result, error: error)
+        Auth.auth().createUser(withEmail: email, password: password) { result, createUserError in
+            self.viewModel.checkSignupResult(result: result, createUserError: createUserError, userName: userName, image: image)
         }
+    }
+    
+    private func updatePhoto() {
+        let imagePickerController: UIImagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+        present(imagePickerController, animated: true, completion: nil)
     }
 }
 
 extension RegistrationViewController: RegistrationObserver {
     
+}
+
+extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let image = info[.editedImage] as? UIImage {
+            registrationView.updatePhotoButton.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        registrationView.updatePhotoButton.layer.cornerRadius = registrationView.updatePhotoButton.frame.width / 2
+        registrationView.updatePhotoButton.layer.masksToBounds = true
+        dismiss(animated: true, completion: nil)
+    }
 }

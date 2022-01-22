@@ -12,11 +12,13 @@ class RegistrationView: UIView {
     // MARK: - Properties
     var signButtonAction: (() -> Void)?
     var textFieldAction: (() -> Void)?
+    var updatePhotoButtonAction: (() -> Void)?
     
     // MARK: - IBOutLets
-    let changePhotoButton: UIButton = {
+    let updatePhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "plus_photo"), for: .normal)
+        button.addTarget(self, action: #selector(handleUpdatePhoto), for: .touchUpInside)
         return button
     }()
     
@@ -58,9 +60,14 @@ class RegistrationView: UIView {
         textFieldAction?()
     }
     
+    @objc private func handleUpdatePhoto() {
+        updatePhotoButtonAction?()
+    }
+    
     // MARK: - setAction
     private func setButtonAction() {
         signButton.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
+        
     }
     
     private func setTextFieldAction() {
@@ -71,20 +78,20 @@ class RegistrationView: UIView {
     
     // MARK: - setViews
     private func setViews() {
-        self.addSubview(changePhotoButton)
+        self.addSubview(updatePhotoButton)
         self.addSubview(registrationStackView)
     }
     
     // MARK: - setLayouts
     private func setLayouts() {
-        changePhotoButton.snp.makeConstraints { make in
+        updatePhotoButton.snp.makeConstraints { make in
             make.height.width.equalTo(UIView.height * 0.17) // 140
             make.top.equalTo(self.safeAreaLayoutGuide).offset(UIView.height * 0.035) // 30
             make.centerX.equalTo(self)
         }
         
         registrationStackView.snp.makeConstraints { make in
-            make.top.equalTo(changePhotoButton.snp.bottom).offset(UIView.height * 0.048) // 40
+            make.top.equalTo(updatePhotoButton.snp.bottom).offset(UIView.height * 0.048) // 40
             make.leading.equalTo(self).offset(UIView.width * 0.09) // 40
             make.trailing.equalTo(self).offset(-UIView.width * 0.09) // -40
             make.height.equalTo(UIView.height * 0.24) // 200
